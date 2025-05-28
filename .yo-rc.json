@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.0.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.24.0"
+    },
+    "version": "1.20.0",
+    "libraryName": "blimped-hello-world",
+    "libraryId": "226fe8a1-dd61-4c90-87c2-393af9c0539e",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "blimped-hello-world",
+    "solutionShortDescription": "blimped-hello-world description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
