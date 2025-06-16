@@ -18,7 +18,7 @@ steps:
     echo See https://aka.ms/yaml
   
 - powershell: |
-    Write-Host "##vso[task.setvariable variable=myJobVar;isOutput=true]${succeeded()}"
+    Write-Host "##vso[task.setvariable variable=myJobVar;isOutput=true]true"
 
 - powershell: |
     Write-Host "Task successful: $(myJobVar)"
