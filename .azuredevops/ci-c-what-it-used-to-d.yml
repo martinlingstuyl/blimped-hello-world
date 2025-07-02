@@ -77,16 +77,13 @@ stages:
               command: 'custom'
               customCommand: 'install @pnp/cli-microsoft365@next -g'
 
-          - task: AzurePowerShell@5
-            displayName: 'Deploy app to SharePoint App Catalog'
-            env:
-              SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-            inputs:
-              azureSubscription: 'BlimpedServiceConnection'
-              ScriptType: 'InlineScript'
-              azurePowerShellVersion: LatestVersion
-              Inline: |
-                m365 login --authType federatedIdentity
-                m365 spo set --url 'https://blimped.sharepoint.com'
-                m365 spo app add --filePath '$(System.ArtifactsDirectory)/blimped-hello-world.sppkg' --overwrite
-                m365 spo app deploy --name 'blimped-hello-world.sppkg' --appCatalogScope 'tenant'
+          - script: |            
+              m365 login # ...
+
+              m365 spo set --url 'https://blimped.sharepoint.com'
+
+              m365 spo app add --filePath '$(System.ArtifactsDirectory)/blimped-hello-world.sppkg' --overwrite
+              
+              m365 spo app deploy --name 'blimped-hello-world.sppkg' --appCatalogScope 'tenant'
+            
+
