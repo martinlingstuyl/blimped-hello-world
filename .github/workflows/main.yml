@@ -1,0 +1,80 @@
+name: Deploy Hello World project to App Catalog
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:  
+  SPFX_PACKAGE_NAME: 'blimped-hello-world.sppkg'
+  
+jobs:
+  build:
+    name: 'Build'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v4
+        
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+    
+      - name: 'Install dependencies'
+        shell: bash
+        run: |
+          npm install
+
+      - name: 'Bundle project'
+        shell: bash
+        run: |
+          gulp bundle --ship
+
+      - name: 'Package solution project'
+        shell: bash
+        run: |
+          gulp package-solution --ship
+          
+      - name: Upload build artifact for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ./sharepoint/solution/blimped-hello-world.sppkg
+          
+  deploy:
+    name: 'Deploy'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+    
+      - name: 'Login to Azure'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: 'Install PnP PowerShell'
+        shell: pwsh
+        run: |
+          Install-Module PnP.PowerShell -Force
+          
+      - name: 'Deploy SPFx App'
+        shell: pwsh
+        run: |
+          m365 login --authType federatedIdentity --appId 5d245710-1423-4796-a1b6-da0620a85ac6 --tenant f49f84a7-ab01-4bb1-a232-f493dc13d988
+          
+          m365 spo set --url 'https://blimped.sharepoint.com'
+
+          m365 spo app add --filePath './blimped-hello-world.sppkg' --overwrite
+
+          m365 spo app deploy --name 'blimped-hello-world.sppkg' --appCatalogScope 'tenant'
