@@ -10,9 +10,6 @@ permissions:
   id-token: write
   contents: read
 
-env:  
-  SPFX_PACKAGE_NAME: 'blimped-hello-world.sppkg'
-  
 jobs:
   build:
     name: 'Build'
@@ -60,7 +57,7 @@ jobs:
         with:
           node-version: 22
     
-      - name: 'Install dependencies'
+      - name: 'Install CLI for Microsoft 365'
         shell: bash
         run: |
           npm install @pnp/cli-microsoft365@next -g
